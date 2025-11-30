@@ -38,7 +38,8 @@ A beginner-friendly machine learning project that detects whether a text message
 
 \- `README.md` → project description
 
-\- `spam\_classifier.ipynb` → optional notebook demo
+
+
 
 
 
