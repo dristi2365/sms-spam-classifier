@@ -1,55 +1,52 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import classification_report, accuracy_score
-import urllib.request
-import io
-import zipfile
+# SMS Spam Classifier
 
-print("Downloading dataset...")
+A machine learning project that classifies SMS messages as **Spam** or **Ham (not spam)** using NLP techniques.
 
-# Load SMS Spam Collection dataset
-url = "https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip"
-response = urllib.request.urlopen(url)
-zip_file = zipfile.ZipFile(io.BytesIO(response.read()))
-data = zip_file.read("SMSSpamCollection").decode("utf-8")
+## Overview
 
-messages = []
-labels = []
+This project demonstrates a classic NLP pipeline — from raw text to a trained classifier — using a real-world SMS dataset. It applies TF-IDF vectorization and a Multinomial Naive Bayes model to achieve high classification accuracy.
 
-for line in data.split("\n"):
-    parts = line.split("\t")
-    if len(parts) == 2:
-        labels.append(parts[0])
-        messages.append(parts[1])
+## How It Works
 
-df = pd.DataFrame({"label": labels, "message": messages})
+1. Downloads the **SMS Spam Collection dataset** (~5,500 messages) directly from UCI ML Repository
+2. Preprocesses and splits the data into training and test sets
+3. Builds a pipeline with **TF-IDF vectorization** + **Multinomial Naive Bayes**
+4. Evaluates using accuracy, precision, recall, and F1-score
+5. Accepts user input for real-time message prediction
 
-# Train/test split
-X_train, X_test, y_train, y_test = train_test_split(
-    df["message"], df["label"], test_size=0.2, random_state=42
-)
+## Results
 
-# TF-IDF + Naive Bayes
-model = Pipeline([
-    ("tfidf", TfidfVectorizer()),
-    ("nb", MultinomialNB())
-])
+| Metric | Score |
+|--------|-------|
+| Accuracy | ~97–99% |
+| Classifier | Multinomial Naive Bayes |
+| Vectorizer | TF-IDF |
+| Dataset | UCI SMS Spam Collection (5,574 messages) |
 
-print("Training model...")
-model.fit(X_train, y_train)
+## How to Run
 
-# Evaluation
-pred = model.predict(X_test)
-print("\nModel Accuracy:", accuracy_score(y_test, pred))
-print("\nClassification Report:\n", classification_report(y_test, pred))
+1. Make sure Python is installed
+2. Install dependencies:
+```bash
+   pip install pandas scikit-learn
+```
+3. Run the script:
+```bash
+   python sms_spam_classifier.py
+```
+4. Enter any SMS message when prompted to get a prediction
 
-# User input loop
-print("\n--- SMS Spam Classifier ---")
-while True:
-    msg = input("Enter a message (or type exit): ")
-    if msg.lower() == "exit":
-        break
-    print("Prediction:", model.predict([msg])[0])
+## Files
+
+| File | Description |
+|------|-------------|
+| `sms_spam_classifier.py` | Main script — data loading, training, evaluation, prediction |
+| `README.md` | Project documentation |
+
+## Tech Stack
+
+- **Language:** Python
+- **Libraries:** Pandas, Scikit-learn
+- **Model:** Multinomial Naive Bayes
+- **Vectorization:** TF-IDF (Term Frequency-Inverse Document Frequency)
+- **Dataset:** [UCI SMS Spam Collection](https://archive.ics.uci.edu/dataset/228/sms+spam+collection)
